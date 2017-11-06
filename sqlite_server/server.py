@@ -94,12 +94,11 @@ def run(dbpath, port, verbose=True):
 	conn.row_factory = sqlite3.Row
 	reactor.listenTCP(port, ConnectionFactory(conn, verbose))
 
-	if verbose:
-		StartupLogger().log('Starting server.')
-		@atexit.register
-		def exit():
-			ExitLogger().log('Stopping server.')
-			conn.close()
+	StartupLogger(verbose).log('Starting server.')
+	@atexit.register
+	def exit():
+		ExitLogger(verbose).log('Stopping server.')
+		conn.close()
 
 	reactor.run()
 
