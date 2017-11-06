@@ -1,0 +1,1 @@
+This is a little project, mostly as a reason to use the Twisted framework to write a server. It's not intended to be used, certainly not in a production environment.

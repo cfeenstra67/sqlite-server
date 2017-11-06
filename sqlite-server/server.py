@@ -9,6 +9,8 @@ import pickle
 from twisted.internet.protocol import Protocol, Factory
 from twisted.internet import reactor
 
+DB_DEFAULT = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data', 'server.db')
+
 class Logger(object):
 	def __init__(self, verbose=True):
 		self.verbose = verbose
@@ -53,20 +55,25 @@ class QueryHandler(object):
 
 class ConnectionProtocol(Protocol, Logger):
 
-	def __init__(self, factory):
+	def __init__(self, factory, addr):
 		self.factory = factory
 		self.verbose = self.factory.verbose
+		self.addr = addr
 
 	def connectionMade(self):
 		self.factory.numProtocols += 1
-		self.log('Connection Made. {} active'.format(self.factory.numProtocols))
+		self.log('Connection made to {}. {} active'.format(self.addr.host, self.factory.numProtocols))
 
 	def connectionLost(self, reason):
 		self.factory.numProtocols -= 1
-		self.log('{} {} active'.format(reason.getErrorMessage(), self.factory.numProtocols))
+		self.log('{} ({}) {} active'.format(
+			reason.getErrorMessage(), 
+			self.addr.host, 
+			self.factory.numProtocols
+		))
 
 	def dataReceived(self, data):
-		self.log('Data Received.')
+		self.log('Data Received from {}.'.format(self.addr.host))
 		handler = QueryHandler(self.factory.conn, self.factory.lock)
 		self.transport.write(handler.handle_query(data))
 
@@ -78,8 +85,8 @@ class ConnectionFactory(Factory, Logger):
 		self.numProtocols = 0
 
 	def buildProtocol(self, addr):
-		self.log('Instantiating connection from {}'.format(addr))
-		return ConnectionProtocol(self)
+		self.log('Instantiating connection from {}'.format(addr.host))
+		return ConnectionProtocol(self, addr)
 
 
 def run(dbpath, port, verbose=True):
@@ -97,10 +104,9 @@ def run(dbpath, port, verbose=True):
 	reactor.run()
 
 if __name__ == '__main__':
-	db_default = os.path.join(*os.path.split(__file__)[:-1], 'server.db')
 
 	parser = argparse.ArgumentParser()
-	parser.add_argument('db', nargs='?', default=db_default,
+	parser.add_argument('db', nargs='?', default=DB_DEFAULT,
 		help='path')
 	parser.add_argument('-p', '--port', type=int, default=6767)
 	parser.add_argument('-v', '--verbose', action='store_true')
