@@ -2,7 +2,7 @@ This is a little project, mostly as a little projected to use the Twisted framew
 
 That said, to test out this project either clone the repo and run the setup script or simply install using `pip3 install git+https://github.com/cfeenstra67/sqlite-server.git` (written in Python 3).
 
-To run the database server, run the following command: `python3 -m sqlite_server.server [DB_PATH] [-p PORT] [-v]`. It's recommended that you use the `-v` argument to see what's going on. The default port is 6767.
+To run the database server, run the following command: `python3 -m sqlite_server.server [DB_PATH] [-p PORT] [-v]`. It's recommended that you use the `-v` argument to see what's going on. The default port is 6767, and the default db path is `~/server.db`
 
 When the server is running, you can connect to the server as follows:
 ```
