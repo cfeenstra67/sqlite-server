@@ -102,7 +102,7 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument('db', nargs='?', default=db_default,
 		help='path')
-	parser.add_argument('-p', '--port', nargs=1, type=int, default=6767)
+	parser.add_argument('-p', '--port', type=int, default=6767)
 	parser.add_argument('-v', '--verbose', action='store_true')
 
 	args = parser.parse_args()
