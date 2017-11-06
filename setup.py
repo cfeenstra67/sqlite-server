@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(
-	name='sqlite-server',
+	name='sqlite_server',
 	version='1.0',
 	description='Simple sqlite database server using twisted',
 	author='Cam Feenstra',
