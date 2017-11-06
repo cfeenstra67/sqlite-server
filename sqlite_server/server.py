@@ -9,7 +9,7 @@ import pickle
 from twisted.internet.protocol import Protocol, Factory
 from twisted.internet import reactor
 
-DB_DEFAULT = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data', 'server.db')
+DB_DEFAULT = os.path.expanduser('~/server.db')
 
 class Logger(object):
 	def __init__(self, verbose=True):
