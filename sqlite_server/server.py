@@ -22,7 +22,7 @@ def deserialize(data):
 	bindata = binascii.a2b_base64(data)
 	return bson.loads(bindata)
 
-class BadRequest(Exception)
+class BadRequest(Exception):
 	pass
 
 class Logger(object):
@@ -54,7 +54,8 @@ class QueryHandler(object):
 		updating = re.search(r'TRIGGER.+update_keys', query, re.I | re.S)
 		inserting = re.search(r'TRIGGER.+insert_keys', query, re.I | re.S)
 		deleting = re.search(r'TRIGGER.+delete_keys', query, re.I | re.S)
-		if any([updating, inserting, deleting]):
+		dropping = re.search(r'DROP\s+TABLE.+REMOTE_ACCESS_KEYS', query, re.I | re.S)
+		if any([updating, inserting, deleting, dropping]):
 			raise sqlite3.IntegrityError('Enough of that, please.')
 
 	def handle_query(self, query):
@@ -66,7 +67,7 @@ class QueryHandler(object):
 						query, args, kwargs = deserialize(query)['components']
 					except:
 						raise BadRequest('Unable to deserialize data.')
-					
+
 					self.validate_query(query)
 					curs.execute(query, *args, **kwargs)
 					self.conn.commit()

@@ -19,3 +19,5 @@ with DBClient('localhost', 6767) as db:
 	db.execute('CREATE TABLE test (name varchar)')
 ```
 The API for the database client is extremely simple, and does not follow the Python DB API protocol. The only method used to interact with the database is `execute(query, *args, **kwargs)`, and this will always either return a pandas dataframe with the results (even if the query is something that does not return any sort of result, such as an INSERT statement; in this case it will just return an empty dataframe) or raise an exception. Data is transmitted between the server and the client as base64 encoded, pickled Python objects (another reason this server isn't suitable for almost any use cases), so exceptions raised by sqlite on the server side are transmitted in this form and raised on the client side.
+
+Check out my blog post about this project [here](http://www.codeandramblings.com/index.php/2017/11/08/using-python-and…se-server-update/) and the update, where I add authentication and cross-language serialization [here](http://www.codeandramblings.com/index.php/2017/11/08/using-python-and-twisted-to-write-a-simple-sqlite-database-server-update/)
